@@ -2,6 +2,9 @@
 
 The aim of this project is to recommend the most convenient ACA meeting based on the provided meeting data.
 
+# bug
+The time zone is not working
+
 ## Key Features
 
 - **Find the Best Meeting:** Use our tool to identify and recommend the ACA meeting that best suits your needs.
