@@ -25,4 +25,4 @@ To get started, follow these steps:
 
 ## Contributing
 
-We welcome contributions! P
+We welcome contributions!
