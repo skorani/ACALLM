@@ -1,7 +1,7 @@
 import os
 import requests
-import fitz  # PyMuPDF
 import json
+import PyPDF2
 
 
 class MeetingInfoExtractor:
@@ -14,23 +14,17 @@ class MeetingInfoExtractor:
         response = requests.get(self.url)
         if response.status_code != 200:
             raise Exception(f"Failed to fetch the URL: {response.status_code}")
-        if "application/pdf" not in response.headers["Content-Type"]:
-            raise Exception(
-                f"Unexpected Content-Type: {response.headers['Content-Type']}"
-            )
-        return response.content
-
-    def save_pdf(self, content):
         with open(self.pdf_path, "wb") as f:
-            f.write(content)
+            f.write(response.content)
 
     def extract_text_from_pdf(self):
-        pdf_document = fitz.open(self.pdf_path)
-        text = ""
-        for page_num in range(len(pdf_document)):
-            page = pdf_document.load_page(page_num)
-            text += page.get_text()
-        return text.encode("utf-8").decode("utf-8")
+        with open(self.pdf_path, "rb") as f:
+            reader = PyPDF2.PdfFileReader(f)
+            text = ""
+            for page_num in range(reader.numPages):
+                page = reader.getPage(page_num)
+                text += page.extract_text()
+        return text
 
     def parse_text(self, text):
         lines = text.split("\n")
@@ -86,8 +80,7 @@ class MeetingInfoExtractor:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     def run(self):
-        content = self.fetch_data()
-        self.save_pdf(content)
+        self.fetch_data()
         text = self.extract_text_from_pdf()
         data = self.parse_text(text)
         self.save_to_json(data)
@@ -96,8 +89,8 @@ class MeetingInfoExtractor:
 
 if __name__ == "__main__":
     url = "https://adultchildren.org/meetings.php?meetingFilter=all"
-    pdf_path = "meetings_data.pdf"
-    json_path = os.path.join("data", "meetings_data.json")
+    pdf_path = "../data/meetings_data.pdf"
+    json_path = "../data/meetings_data.json"  # Save to data directory outside src
 
     extractor = MeetingInfoExtractor(url, pdf_path, json_path)
     extractor.run()

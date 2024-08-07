@@ -23,12 +23,12 @@ prompt = (
     f"You are an ACA flow traveler.\n"
     f"The user is currently feeling {mood}.\n"
     f"The user's time zone is {time_zone}.\n"
-    f"Here are the available meetings in the user's time zone: "
-    f"{filtered_meetings}\n"
-    f"Considering the user's mood and time zone, offer a suitable meeting time "
-    f"from the available data.\n"
-    f"Think step-by-step to ensure the meeting time is convenient for the user."
+    f"Here are the available meetings in the user's time zone: {filtered_meetings}\n"
+    f"Considering the user's mood and time zone, propose a suitable meeting time from the available data.\n"
+    f"Use self-consistency reasoning to explore multiple paths and perspectives before finalizing the most convenient meeting time for the user.\n"
+    f"Provide a detailed explanation of your thought process to ensure the chosen time is optimal."
 )
+
 
 response = openai.ChatCompletion.create(
     model="llama3.1",
